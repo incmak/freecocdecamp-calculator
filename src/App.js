@@ -23,6 +23,7 @@ const calculatorButtons = [
 ]
 export default function App() {
   const [display, setDisplay] = useState("0")
+  const [prevCalc, setPrevCalc] = useState("")
 
   const handleClick = (e) => {
     setDisplay(prev => { 
@@ -36,11 +37,10 @@ export default function App() {
         return prev / 100
       }
       if (e.target.value === "=") {
-// If the '=' key is pressed without input, ignore it
         if(prev === "0") {
           return prev
         }
-        
+        setPrevCalc(prev)
         return eval(prev)
       }
       if(e.target.value === ".") {
@@ -56,6 +56,13 @@ export default function App() {
       if (prev === "0") { 
         return e.target.value
       }
+      const lastChar = prev[prev.length - 1];
+      const currentChar = e.target.value;
+      if (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/") {
+        if (currentChar === "+" || currentChar === "-" || currentChar === "*" || currentChar === "/") {
+          return prev.slice(0, prev.length - 1) + currentChar;
+        }
+      }
       return prev + e.target.value
     })
   }
@@ -63,7 +70,8 @@ export default function App() {
   return (
     <div className="w-[390px] border border-white rounded-xl">
         <div className="display h-[100px] border-b border-white px-5">
-          <div className="flex justify-end items-center h-full">
+          <div className="flex justify-end items-end flex-col  h-full">
+            <p className="text-2xl font-bold text-white">{prevCalc}</p>
             <p className="text-4xl font-bold text-white" id="display">{display}</p>
             </div>
           </div>
